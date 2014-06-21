@@ -1,0 +1,8 @@
+access_key_id: changeme
+secret_access_key: changeme
+keypair_name: changeme
+ami: ami-changeme
+instance_type: m3.large
+ssh_private_key_path: /home/sfortner/site-builder/changeme.pem
+security_groups: ['default']
+

@@ -1,0 +1,4 @@
+availability_zone: us-east-1b
+subnet_id: subnet-changeme
+elastic_ip: 
+private_ip: 

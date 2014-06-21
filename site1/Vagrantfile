@@ -1,0 +1,51 @@
+require '../builder'
+require 'yaml'
+
+SITE = File.basename(Dir.pwd)
+
+Vagrant.require_plugin "vagrant-aws"
+
+sg_map = {
+  "sg1"     => "sg-changeme",
+  "sg2"     => "sg-changeme",
+}
+
+@builder = HostBuilder::Builder.new(SITE)
+
+Vagrant.configure("2") do |config|
+
+  @builder.hosts.each do |host|
+    
+    # since we can't pass args to directly vagrant, set an env variable to specify host
+    next unless host.hostname =~ /#{ENV['VAGRANT_TARGET']}/
+
+    config.vm.define host.hostname do |instance|
+      instance.vm.box = "dummy"
+
+      instance.vm.provider :aws do |aws|
+        aws.ami               = host.ami
+        aws.access_key_id     = host.access_key_id
+        aws.secret_access_key = host.secret_access_key
+        aws.keypair_name      = host.keypair_name
+        aws.subnet_id         = host.subnet_id
+        aws.instance_type     = host.instance_type
+        aws.availability_zone = host.availability_zone 
+        aws.region            = host.region 
+
+        host.security_groups.map! { |sg| sg_map[sg] || sg }
+        aws.security_groups   = host.security_groups || security_groups[:default]
+        
+#        aws.user_data         = host.userdata.to_yaml
+
+        aws.elastic_ip        = host.elastic_ip
+        aws.private_ip_address = host.private_ip
+
+        aws.tags              = {'Name' => "#{host.hostname}"}
+      end
+
+      instance.ssh.private_key_path = host.ssh_private_key_path 
+      instance.ssh.username         = "root"
+
+    end
+  end
+end
