@@ -1,7 +1,8 @@
-require '../builder'
 require 'yaml'
+# paths should be relative to file being executed
+require File.expand_path('../../builder.rb', __FILE__)
 
-SITE = File.basename(Dir.pwd)
+SITE = File.basename(File.expand_path('..', __FILE__))
 
 Vagrant.require_plugin "vagrant-aws"
 

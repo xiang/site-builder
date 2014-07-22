@@ -7,6 +7,11 @@ require 'deep_merge'
 # global defaults first
 # then role defaults
 # then individual hosts
+#
+# issues:
+# host folder can't contain any bogus files
+# invalid json causes cryptic string error with vagrant
+
       
 module HostBuilder
 
